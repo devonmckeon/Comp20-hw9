@@ -1,0 +1,89 @@
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <style>
+      html {
+        padding: 5%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Setlist</h1>
+    <form id="form">
+      <div>Filter By Genre</div>
+      <select name="genre-select" id="genre-select" size="3">
+        <option>rock</option>
+        <option>pop</option>
+        <option>disco</option>
+      </select>
+      <div><input type="submit" id="submit" value="Filter!" ; /></div>
+    </form>
+    <div id="setlist-content"></div>
+    <script>
+      var text =
+        '{ "setlist" : [' +
+        '{ "artist":["Whitney Houston"] , "title":"I Will Always Love You", "genre":["pop"], "released":"1992" },' +
+        '{ "artist":["Elton John"] , "title":"Tiny Dancer", "genre":["pop", "rock"], "released":"1971" },' +
+        '{ "artist":["The Police"] , "title":"Every Breath You Take", "genre":["pop"], "released":"1983" },' +
+        '{ "artist":["Ed Sheeran"] , "title":"Shape of You", "genre":["pop"], "released":"2017" },' +
+        '{ "artist":["ABBA"] , "title":"Dancing Queen", "genre":["pop", "disco"], "released":"1976" },' +
+        '{ "artist":["Queen"] , "title":"Another One Bites the Dust", "genre":["rock", "disco"], "released":"1980" },' +
+        '{ "artist":["Adele"] , "title":"Someone Like You", "genre":["pop"], "released":"2011" },' +
+        '{ "artist":["Madonna"] , "title":"Like a Prayer", "genre":["pop"], "released":"1989" },' +
+        '{ "artist":["Lifehouse"] , "title":"Hanging By a Moment", "genre":["pop"], "released":"2000" },' +
+        '{ "artist":["The Beatles"] , "title":"Something", "genre":["rock"], "released":"1969" }]}';
+      var obj = JSON.parse(text);
+      var setlist = obj.setlist;
+      var setlistContent = document.getElementById("setlist-content");
+      function matchesGenre(key, genreArray) {
+        if (key == "") return true;
+        for (let i = 0; i < genreArray.length; i++) {
+          if (genreArray[i] == key) return true;
+        }
+        return false;
+      }
+      function getGenres(genreArray) {
+        var string = "";
+        for (let i = 0; i < genreArray.length; i++) {
+          string += genreArray[i];
+          if (i != genreArray.length - 1) string += ", ";
+        }
+        return string;
+      }
+      function filterDisplay(genreKey) {
+        var setlistString = "";
+        for (let i = 0; i < setlist.length; i++) {
+          if (!matchesGenre(genreKey, setlist[i].genre)) continue;
+          var artist = "Artist(s): " + setlist[i].artist;
+          var title = setlist[i].title;
+          var genre = "Genre(s): " + getGenres(setlist[i].genre);
+          var year = "Released: " + setlist[i].released;
+          var songString =
+            title +
+            "<br />" +
+            artist +
+            "<br />" +
+            genre +
+            "<br />" +
+            year +
+            "<br /><br />";
+          setlistString += songString;
+        }
+
+        setlistContent.innerHTML = setlistString;
+      }
+      function handleClick() {
+        var selected = document.getElementById("genre-select").value;
+        filterDisplay(selected);
+        event.preventDefault();
+      }
+      document.getElementById("form").addEventListener("submit", handleClick);
+      filterDisplay("");
+    </script>
+  </body>
+</html>
